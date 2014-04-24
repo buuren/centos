@@ -1,5 +1,5 @@
-CentOS adventures! Check wiki
+CentOS
 ======
 
-CentOS adventures
+https://github.com/buuren/centos/wiki
 
