@@ -1,34 +1,52 @@
 #!/bin/sh
 #
-# crond          Start/Stop the cron clock daemon.
+# uwsgi          Start/Stop the uwsgi protocol daemon.
 #
 # chkconfig: 2345 90 60
-# description: wsgi 
+# description: uwsgi 
+# http://projects.unbit.it/uwsgi/
 
-[ -f /etc/sysconfig/crond ] || {
+
+
+
+
+# Check if binary exists. Without binary you can't manage the service.
+# If binary doesn't exist, run the code in {...} part.
+# if first argument is "status", exit code is 4, else exit code is 6
+[ -f /usr/local/bin/uwsgi ] || {
     [ "$1" = "status" ] && exit 4 || exit 6
 }
 
+#Last command return value.
 RETVAL=0
-prog="crond"
-exec=/usr/sbin/crond
-lockfile=/var/lock/subsys/crond
-config=/etc/sysconfig/crond
+prog="uwsgi"
+# path to binary executable
+exec=/usr/local/bin/uwsgi
+# File lock
+lockfile=/tmp/uwsgi_pid.txt
+# Config location
+config=/etc/sysconfig/uwsgi
 
-# Source function library.
+# Source function library. All variables in 'functions' script will replaced all current variables in existing shell, until script is completed
+# http://ss64.com/bash/source.html
 . /etc/rc.d/init.d/functions
 
-[ $UID -eq 0 ] && [ -e /etc/sysconfig/$prog ] && . /etc/sysconfig/$prog
+# user is root, file /etc/sysconfig/$prog exists, read source from /etc/sysconfig/$prog
+# [ $UID -eq 0 ] && [ -e /etc/sysconfig/$prog ] && . /etc/sysconfig/$prog
 
 start() {
-    if [ $UID -ne 0 ] ; then
+    # allow root and UID=500 user to run init script
+    if [ $UID -ne 0 || $UID -ne 500 ] ; then
         echo "User has insufficient privilege."
         exit 4
     fi
+    # can execute binary
     [ -x $exec ] || exit 5
+    # config exists
     [ -f $config ] || exit 6
     echo -n $"Starting $prog: "
-    daemon $prog $CRONDARGS
+    #run $prog with '--ini $config' arguments
+    daemon $prog --ini $config
     retval=$?
     echo
     [ $retval -eq 0 ] && touch $lockfile
@@ -39,6 +57,7 @@ stop() {
         echo "User has insufficient privilege."
         exit 4
     fi
+    
     echo -n $"Stopping $prog: "
         if [ -n "`pidfileofproc $exec`" ]; then
                 killproc $exec
