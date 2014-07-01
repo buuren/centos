@@ -1,71 +1,51 @@
 #!/bin/sh
+# ----------------------------------------------------------------------------------
 #
-# uwsgi: Start/Stop the uwsgi protocol daemon.
-#
-# chkconfig: 2345 90 60
-# description: uwsgi init management script.
+# chkconfig: 345 55 45
+# description: uwsgi server init script.
 # http://projects.unbit.it/uwsgi/
-
-
+# ----------------------------------------------------------------------------------
 # Read source from function library. 
-# All variables in 'functions' script will replaced all current variables in existing shell, until script is completed
-# http://ss64.com/bash/source.html
+# All variables in 'functions' script will replace all current variables in existing shell, until script is completed.
+# More info: http://ss64.com/bash/source.html
 . /etc/rc.d/init.d/functions
-
-
+# Declare path variables
 uwsgi_exec="/usr/local/bin/uwsgi"
 prog=$(basename $uwsgi_exec)
-
-
-
-# Config location
 config="/etc/sysconfig/$prog"
-lockfile="/tmp/$prog.lock"
-pidfile="/tmp/$prog.pid"
-
-exit 1
-
-# Check if executable exists. 
-# If executable doesn't exist, run the code in {...} part.
-# if first argument is "status", exit code is 4, else exit code is 6
-[ -f /usr/local/bin/uwsgi ] || {
-    [ "$1" = "status" ] && exit 4 || exit 6
-}
-
-
-
-
-# user is root, file /etc/sysconfig/$prog exists, read source from /etc/sysconfig/$prog
-# [ $UID -eq 0 ] && [ -e /etc/sysconfig/$prog ] && . /etc/sysconfig/$prog
-
+lockfile="/tmp/${prog}.lock"
+pidfile="/tmp/${prog}.pid"
+logfile="/tmp/daemonize.log"
+# Check if executable exists and can be executed
+[ -f $uwsgi_exec ] && [ -x $uwsgi_exec ] || exit 5
+# Check if config exists
+[ -f $config ] || exit 6
+# Define functions
 start() {
-    # allow root and UID=500 user to run init script
-    if [ $UID -ne 0 || $UID -ne 500 ] ; then
+    # allow root and UID=500 user to run start script
+    if [ $UID -ne 0 || $UID -ne 500 ]; then
         echo "User has insufficient privilege."
         exit 4
     fi
     # can execute binary
-    [ -x $exec ] || exit 5
-    # config exists
-    [ -f $config ] || exit 6
-    echo -n $"Starting $prog: "
-    #run $prog with '--ini $config' arguments
-    daemon $prog --ini $config
+    echo -n "Starting $prog: "
+    #run $uwsgi_exec with '--ini $config' argument
+    daemon $uwsgi_exec --ini $config
     retval=$?
     echo
     [ $retval -eq 0 ] && touch $lockfile
+    return $retval
 }
 
 stop() {
-    if [ $UID -ne 0 ] ; then
+    if [ $UID -ne 0 || $UID -ne 500 ]; then
         echo "User has insufficient privilege."
         exit 4
     fi
     
-    echo -n $"Stopping $prog: "
-        if [ -n "`pidfileofproc $exec`" ]; then
-                killproc $exec
-                RETVAL=3
+    echo -n "Stopping $prog: "
+        if [ -n "`pidfileofproc $uwsgi_exec`" ]; then
+                $proc --stop $pidfile
         else
                 failure $"Stopping $prog"
         fi
@@ -75,64 +55,68 @@ stop() {
 }
 
 restart() {
-    rh_status_q && stop
+    
+    if [ $UID -ne 0 || $UID -ne 500 ]; then
+        echo "User has insufficient privilege."
+        exit 4
+    fi
+    
+    stop
     start
 }
 
 reload() {
-        echo -n $"Reloading $prog: "
-        if [ -n "`pidfileofproc $exec`" ]; then
-                killproc $exec -HUP
-        else
-                failure $"Reloading $prog"
-        fi
-        retval=$?
-        echo
+    if [ $UID -ne 0 || $UID -ne 500 ]; then
+        echo "User has insufficient privilege."
+        exit 4
+    fi
+    
+    echo -n "Reloading $prog: "
+    if [ -n "`pidfileofproc $exec`" ]; then
+            $proc --reload $pidfile
+    else
+            failure $"Reloading $prog"
+    fi
+    
+    retval=$?
+    echo
 }
 
-force_reload() {
-        # new configuration takes effect after restart
-    restart
+check() {
+	[ -f $logfile ] || exit 6
+	# Show logfile
+	cat $logfile
+    # We're OK!
+    return 0
 }
 
 rh_status() {
     # run checks to determine if the service is running or use generic status
-    status -p /var/run/crond.pid $prog
+    status -p $pidfile $prog
 }
-
-rh_status_q() {
-    rh_status >/dev/null 2>&1
-}
-
 
 case "$1" in
     start)
-        rh_status_q && exit 0
-        $1
+        start
         ;;
     stop)
-        rh_status_q || exit 0
-        $1
+        stop
         ;;
-    restart)
-        $1
-        ;;
-    reload)
-        rh_status_q || exit 7
-        $1
-        ;;
-    force-reload)
-        force_reload
-        ;;
-    status)
-        rh_status
-        ;;
-    condrestart|try-restart)
-        rh_status_q || exit 0
+	restart)
         restart
         ;;
+    reload)
+        reload
+        ;;
+    check)
+        check
+        ;;
+	status)
+        rh_status
+        ;;
     *)
-        echo $"Usage: $0 {start|stop|status|restart|condrestart|try-restart|reload|force-reload}"
-        exit 2
+        echo "Usage: service uwsgi {start|stop|restart|reload|check|status}"
+        exit 1
 esac
-exit $?
+
+exit 0
