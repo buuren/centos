@@ -4,6 +4,9 @@
 # chkconfig: 345 55 45
 # description: uwsgi server init script.
 # http://projects.unbit.it/uwsgi/
+#
+#### create service: chkconfig --add uwsgi
+#
 # ----------------------------------------------------------------------------------
 # Read source from function library. 
 # All variables in 'functions' script will replace all current variables in existing shell, until script is completed.
