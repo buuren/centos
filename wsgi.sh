@@ -1,31 +1,39 @@
 #!/bin/sh
 #
-# uwsgi          Start/Stop the uwsgi protocol daemon.
+# uwsgi: Start/Stop the uwsgi protocol daemon.
 #
 # chkconfig: 2345 90 60
-# description: uwsgi 
+# description: uwsgi init management script.
 # http://projects.unbit.it/uwsgi/
 
-# Check if binary exists. Without binary you can't manage the service.
-# If binary doesn't exist, run the code in {...} part.
+
+# Read source from function library. 
+# All variables in 'functions' script will replaced all current variables in existing shell, until script is completed
+# http://ss64.com/bash/source.html
+. /etc/rc.d/init.d/functions
+
+
+uwsgi_exec="/usr/local/bin/uwsgi"
+prog=$(basename $uwsgi_exec)
+
+
+
+# Config location
+config="/etc/sysconfig/$prog"
+lockfile="/tmp/$prog.lock"
+pidfile="/tmp/$prog.pid"
+
+exit 1
+
+# Check if executable exists. 
+# If executable doesn't exist, run the code in {...} part.
 # if first argument is "status", exit code is 4, else exit code is 6
 [ -f /usr/local/bin/uwsgi ] || {
     [ "$1" = "status" ] && exit 4 || exit 6
 }
 
-#Last command return value.
-RETVAL=0
-prog="uwsgi"
-# path to binary executable
-exec=/usr/local/bin/uwsgi
-# File lock
-lockfile=/tmp/uwsgi_pid.txt
-# Config location
-config=/etc/sysconfig/uwsgi
 
-# Source function library. All variables in 'functions' script will replaced all current variables in existing shell, until script is completed
-# http://ss64.com/bash/source.html
-. /etc/rc.d/init.d/functions
+
 
 # user is root, file /etc/sysconfig/$prog exists, read source from /etc/sysconfig/$prog
 # [ $UID -eq 0 ] && [ -e /etc/sysconfig/$prog ] && . /etc/sysconfig/$prog
