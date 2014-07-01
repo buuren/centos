@@ -6,10 +6,6 @@
 # description: uwsgi 
 # http://projects.unbit.it/uwsgi/
 
-
-
-
-
 # Check if binary exists. Without binary you can't manage the service.
 # If binary doesn't exist, run the code in {...} part.
 # if first argument is "status", exit code is 4, else exit code is 6
