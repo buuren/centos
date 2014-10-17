@@ -1,14 +1,15 @@
-/usr/local/nagios/etc/
-├── cgi.cfg
+Current structure of /usr/local/nagios/etc/:
+
+
 ├── config
-│   ├── cgi.cfg -> /usr/local/nagios/etc/cgi.cfg
-│   └── nagios.cfg -> /usr/local/nagios/etc/nagios.cfg
+│   ├── cgi.cfg
+│   ├── nagios.cfg
+│   └── resource.cfg
 ├── hosts
 │   ├── linux_hostgroups.cfg
 │   ├── linux_hosts.cfg
 │   ├── windows_hostgroups.cfg
 │   └── windows_hosts.cfg
-├── nagios.cfg
 ├── nrpe
 │   └── nrpe.cfg
 ├── objects
@@ -17,7 +18,6 @@
 │   ├── printer.cfg
 │   ├── switch.cfg
 │   └── timeperiods.cfg
-├── resource.cfg
 ├── services
 │   ├── localhost_services.cfg
 │   ├── oracle6.ucm10g_services.cfg
@@ -28,7 +28,4 @@
 │   ├── service_templates.cfg
 │   └── windows_templates.cfg
 └── users
-    ├── htpasswd.users
-    └── resource.cfg -> /usr/local/nagios/etc/resource.cfg
-
-7 directories, 24 files
+    └── htpasswd.users
