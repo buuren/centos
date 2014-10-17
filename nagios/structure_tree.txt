@@ -1,6 +1,5 @@
 Current structure of /usr/local/nagios/etc/:
 
-
 ├── config
 │   ├── cgi.cfg
 │   ├── nagios.cfg
