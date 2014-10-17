@@ -25,11 +25,12 @@
 │   ├── printer_services.cfg
 │   └── switch_services.cfg
 ├── templates
-│   ├── generic_template.cfg
-│   ├── linux_templates.cfg
+│   ├── contact_template.cfg
+│   ├── generic_host_template.cfg
+│   ├── linux_host_templates.cfg
+│   ├── printer_template.cfg
 │   ├── service_templates.cfg
-│   └── windows_templates.cfg
+│   ├── switch_template.cfg
+│   └── windows_host_templates.cfg
 └── users
     └── htpasswd.users
-
-7 directories, 25 files
