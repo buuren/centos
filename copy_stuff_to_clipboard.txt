@@ -1,0 +1,11 @@
+1) yum install xsel
+
+2) Create aliases:
+
+alias pbcopy='xsel --clipboard --input'
+
+alias pbpaste='xsel --clipboard --output'
+
+3) Usage:
+
+cat file.txt | pbcopy
