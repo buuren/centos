@@ -1,0 +1,34 @@
+/usr/local/nagios/etc/
+├── cgi.cfg
+├── config
+│   ├── cgi.cfg -> /usr/local/nagios/etc/cgi.cfg
+│   └── nagios.cfg -> /usr/local/nagios/etc/nagios.cfg
+├── hosts
+│   ├── linux_hostgroups.cfg
+│   ├── linux_hosts.cfg
+│   ├── windows_hostgroups.cfg
+│   └── windows_hosts.cfg
+├── nagios.cfg
+├── nrpe
+│   └── nrpe.cfg
+├── objects
+│   ├── commands.cfg
+│   ├── contacts.cfg
+│   ├── printer.cfg
+│   ├── switch.cfg
+│   └── timeperiods.cfg
+├── resource.cfg
+├── services
+│   ├── localhost_services.cfg
+│   ├── oracle6.ucm10g_services.cfg
+│   └── SRV0469451_services.cfg
+├── templates
+│   ├── generic_template.cfg
+│   ├── linux_templates.cfg
+│   ├── service_templates.cfg
+│   └── windows_templates.cfg
+└── users
+    ├── htpasswd.users
+    └── resource.cfg -> /usr/local/nagios/etc/resource.cfg
+
+7 directories, 24 files
