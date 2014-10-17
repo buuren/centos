@@ -6,4 +6,4 @@ Add all files into nagios.cfg:
 
 After that:
 
-Remove: nrpe.cfg, nagios.cfg, cgi.cfg, resource.cfg
+Remove: nrpe.cfg, nagios.cfg, cgi.cfg, resource.cfg from /usr/local/nagios/etc/config/nagios.cfg
