@@ -39,7 +39,7 @@ if [ $check_if_ip ]; then
               exit 3
            fi
    else
-        echo "CRITICAL - Packet amount is not a number"
+        echo "CRITICAL - ($amount_of_pings) is not a number"
         exit 2
    fi
 else
